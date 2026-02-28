@@ -3,6 +3,8 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -85,8 +87,49 @@ int selectOptionHelper(int min, int max) {
     }
 }
 
-double distance() {
+// Euclidean Distance formula helper
+double euclideanDistance(int row1, int row2, const vector<int>& featureSet) {
+    double sum = 0.0;
 
+    // compute sum of squared differences between two points
+    for(int feature : featureSet) {
+        double difference = dataSet[row1][feature] - dataSet[row2][feature];
+        sum += difference * difference;
+    }
+    // square root of sum above
+    return sqrt(sum);
+}
+
+// Leave one out cross validation
+double leaveOneOut(const vector<int>& featureSet) {
+    int numCorrectlyClassified = 0;
+
+    // outer loop for each instance
+    for(int i = 0; i < dataSet.size(); i++) {
+        double labelObjectToClassify = dataSet[i][0];
+
+        double nearestNeighborDist = numeric_limits<double>::infinity();
+        int nearestNeighborLoc = -1;
+        
+        // innter loop to comapare to other instances
+        for(int k = 0; k < dataSet.size(); k++) {
+            if(k != i) { // dont compare to self
+                double distance = euclideanDistance(i, k, featureSet);
+
+                // update nearest neighbor IF closer
+                if(distance < nearestNeighborDist) {
+                    nearestNeighborDist = distance;
+                    nearestNeighborLoc = k;
+                }
+            }
+        }
+
+        double neighborLabel = dataSet[nearestNeighborLoc][0];
+
+        if(labelObjectToClassify == neighborLabel) numCorrectlyClassified++; // amount of correct classifications
+    }
+    // accuracy calculation
+    return (double)numCorrectlyClassified / dataSet.size();
 }
 
 /* ////////////////////////////////////////////////////////////////////
@@ -96,7 +139,7 @@ ALGORITHMS
 //////////////////////////////////////////////////////////////////// */
 
 void forwardSelection() {
-
+    
 }
 
 void backwardElimination() {
@@ -114,7 +157,6 @@ int main() {\
     cout << "Feature Selection Algorithm" << endl << endl;
 
     string fileName;
-    int choice;
     
     cout << "Enter dataset filename: ";
     cin >> fileName;
@@ -125,6 +167,18 @@ int main() {\
     }
         
     cout << "This dataset has " << numFeatures << " features with " << dataSet.size() << " instances.\n";
+
+    cout << "Choose algorithm: \n"
+         << "(1) Forward Selection\n"
+         << "(2) Backward Elimination\n";
+    int choice = selectOptionHelper(1,2);
+    
+    if(choice == 1) {
+        forwardSelection();
+    }
+    else {
+        backwardElimination();
+    }
 
     return 0;
 }
