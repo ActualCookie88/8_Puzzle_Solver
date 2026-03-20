@@ -63,6 +63,14 @@ If you're unable to build, an executable may be provided:
 ./a.out
 ```
 
+## Output
+This program displays:
+
+- Solution path from initial state to goal  
+- Total number of moves (solution cost)  
+- Number of nodes expanded during the search  
+- Maximum queue size reached
+
 ## Report
 For detailed results and analysis, see project report:
 [View Project Report](8-Puzzle-ProjectReport.pdf)
