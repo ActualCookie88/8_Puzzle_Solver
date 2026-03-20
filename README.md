@@ -1,5 +1,7 @@
 # 8-Puzzle Solver
 
+By Luke Matsunaga
+
 Project completed as part of an algorithms course. 
 Focus: Implementing search algorithms for solving the 8-puzzle.
 
