@@ -12,7 +12,7 @@ void generalSearch(const vector<vector<int>>& puzzle_, int algorithm) {
     // establish pqueue and visited set
     priority_queue<Node> pq;
     unordered_map<string, int> bestGn;
-    vector<string> algs = {"UNIFORM COST SEARCH", "MISPLACED TILE HEURISTIC", "MANHATTAN DISTANCE HEURISTIC"};
+    vector<string> algs = {"UNIFORM COST SEARCH", "the MISPLACED TILE HEURISTIC", "the MANHATTAN DISTANCE HEURISTIC"};
 
     // initial state/node, establish gn and hn
     Node init;
@@ -60,7 +60,7 @@ void generalSearch(const vector<vector<int>>& puzzle_, int algorithm) {
         // check if puzzle is solved
         if(curr.puzzle == solution) {
             border();
-            cout << "Goal state reached!\n\n" << 
+            cout << "Goal state reached! You used " << algs[algorithm-1] << "!\n\n" << 
                     "Solution Depth: " << curr.gn << endl <<
                     "Nodes Expanded: " << numExpanded << endl <<
                     "Max Queue size: " << queueSize << endl;

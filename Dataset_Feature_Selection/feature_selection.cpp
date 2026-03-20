@@ -329,16 +329,24 @@ int main() {
     int choice = selectOptionHelper(1,3);
 
     if(choice == 1) {
-        fileName = "CS170_Small_DataSet__7.txt";
+        fileName = "data/CS170_Small_DataSet__7.txt";
     }
     else if(choice == 2){
-        fileName = "CS170_Large_DataSet__85.txt";
+        fileName = "data/CS170_Large_DataSet__85.txt";
     }
     else {
-        cout << "Enter dataset filename: ";
+        cout << "Enter dataset filename (inside 'data/' folder): ";
         cin >> fileName;
+        fileName = "data/" + fileName;
         cout << endl;
     }
+
+    ifstream testFile(fileName);
+    if(!testFile) {
+        cout << "File not found: " << fileName << endl;
+        return false;
+    }
+    testFile.close();
 
     if(!scanData(fileName)) return 1;
 
@@ -351,9 +359,9 @@ int main() {
          << "(2) Backward Elimination\n";
     choice = selectOptionHelper(1,2);
 
-    ofstream outFile("output.txt");
+    ofstream outFile("output/output.txt");
     if(!outFile.is_open()) {
-        cout << "Error opening output file.\n";
+        cout << "Error opening output file in output/ directory.\n";
         return 1;
     }
     

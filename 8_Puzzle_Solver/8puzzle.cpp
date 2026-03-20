@@ -7,6 +7,8 @@
 #include <iostream>
 #include <unordered_set>
 #include <chrono>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -51,6 +53,22 @@ vector<vector<int>> depthSelectHelper(int choice) {
     return depths[index];
 }
 
+bool isSolvable(const vector<vector<int>>& puzzle) {
+    vector<int> flat;
+    for(auto &row : puzzle)
+        for(int x : row)
+            if(x != 0) flat.push_back(x); // ignore blank
+
+    int inversions = 0;
+    for(int i = 0; i < flat.size(); i++) {
+        for(int j = i+1; j < flat.size(); j++) {
+            if(flat[i] > flat[j]) inversions++;
+        }
+    }
+
+    return inversions % 2 == 0; // true = solvable
+}
+
 /* ////////////////////////////////////////////////////////////////////
 
 MAIN
@@ -75,35 +93,59 @@ int main() {
     }
     else if(choice == 2) { // custom puzzle
         unordered_set<int> seen;
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
-                int tile;
-                while(true) {
-                    cout << "Enter tile Number (Row " << i + 1 << ", Column " << j + 1 << ") [0-8, no duplicates]: ";
-                    cin >> tile;
+        cout << "Enter your custom puzzle row by row (use 0 for empty, numbers 1-8, separated by spaces, no duplicates):\n";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
+        for(int i = 0; i < 3; i++) {
+            while(true) {
+                cout << "Enter row " << i+1 << ": ";
+                string line;
+                getline(cin, line); // now safe
+                stringstream ss(line);
+                vector<int> row;
+                int tile;
+                bool valid = true;
+
+                while(ss >> tile) {
                     // check valid number
                     if(tile < 0 || tile > 8) {
-                        cout << "INVALID: Must be between 0 and 8.\n";
-                        continue;
+                        cout << "INVALID: Numbers must be between 0 and 8.\n";
+                        valid = false;
+                        break;
                     }
-
-                    // check for duplicates
+                    // check duplicates
                     if(seen.count(tile)) {
-                        cout << "INVALID: Tile already used.\n";
-                        continue;
+                        cout << "INVALID: Tile " << tile << " already used.\n";
+                        valid = false;
+                        break;
                     }
-
-                    // valid input
-                    puzzle[i][j] = tile;
-                    seen.insert(tile);
-                    break;
+                    row.push_back(tile);
                 }
+
+                if(!valid) continue;
+
+                // check row length
+                if(row.size() != 3) {
+                    cout << "INVALID: Must enter exactly 3 numbers per row.\n";
+                    continue;
+                }
+
+                // all good, add tiles
+                for(int j = 0; j < 3; j++) {
+                    puzzle[i][j] = row[j];
+                    seen.insert(row[j]);
+                }
+                break;
             }
         }
     }
     else {
         cout << "ERROR";
+        return 0;
+    }
+
+    if(!isSolvable(puzzle)) {
+        cout << "\nThis puzzle is impossible to solve!\n";
         return 0;
     }
 
@@ -125,8 +167,16 @@ int main() {
     generalSearch(puzzle, choice);
     auto end = chrono::high_resolution_clock::now();
 
-    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-    cout << "Execution Time: " << duration << " ms\n";
+    auto duration_ms = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+    cout << fixed;
+    if(duration_ms < 1000) {
+        cout << "Execution Time: " << duration_ms << " miliseconds\n";
+    } else {
+        double duration_s = duration_ms / 1000.0;
+        cout << fixed << setprecision(2);
+        cout << "Execution Time: " << duration_s << " seconds\n";
+    }
 
     return 0;
 }
