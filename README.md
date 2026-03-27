@@ -38,6 +38,9 @@ See project README for build and run instructions
 ## How to Use
 Each project is self-contained. Navigate into a project folder and follow its README for setup and execution.
 
+## INteractive Demo
+[Link here](https://ActualCookie88.github.io/IntroToAIProjects/visualizer.html)
+
 ## Technologies Used
 - C++ (C++17)  
 - STL  
