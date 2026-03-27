@@ -29,7 +29,11 @@ This project implements an 8-puzzle solver in C++ using classical AI search tech
 - State-space representation  
 - Informed vs uninformed search  
 - Heuristic design and evaluation  
-- Optimal pathfinding and cost analysis  
+- Optimal pathfinding and cost analysis
+
+## Interactive Demo
+Below is a link to an interactive visual demo of the 8-puzzle.
+[Link here](https://ActualCookie88.github.io/IntroToAIProjects/visualizer.html)
 
 ## Building the Project
 1. Clone the repo (if you haven't already)
