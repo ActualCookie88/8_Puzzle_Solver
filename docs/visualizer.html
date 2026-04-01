@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intro To AI Projects — Luke Matsunaga</title>
+<title>8-Puzzle Solver — Luke Matsunaga</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -43,7 +43,6 @@ body {
   min-height: 100vh;
 }
 
-/* ── Header ── */
 .header {
   display: flex;
   align-items: flex-start;
@@ -68,10 +67,7 @@ h1 {
   color: var(--text);
   margin-bottom: 4px;
 }
-.header-sub {
-  font-size: 13px;
-  color: var(--text2);
-}
+.header-sub { font-size: 13px; color: var(--text2); }
 .header-sub a {
   color: var(--cyan);
   text-decoration: none;
@@ -79,12 +75,7 @@ h1 {
   font-size: 12px;
 }
 .header-sub a:hover { text-decoration: underline; }
-.header-right {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  padding-top: 4px;
-}
+.header-right { display: flex; gap: 6px; align-items: center; padding-top: 4px; }
 .badge {
   font-family: var(--mono);
   font-size: 10px;
@@ -96,40 +87,6 @@ h1 {
   letter-spacing: 0.04em;
 }
 
-/* ── Tabs ── */
-.tabs {
-  display: flex;
-  gap: 2px;
-  margin-bottom: 2rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 4px;
-  width: fit-content;
-}
-.tab {
-  font-family: var(--mono);
-  font-size: 12px;
-  padding: 7px 18px;
-  border-radius: 7px;
-  border: none;
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.02em;
-}
-.tab.active {
-  background: var(--bg4);
-  color: var(--text);
-  border: 1px solid var(--border2);
-}
-.tab:hover:not(.active) { color: var(--text); }
-
-.panel { display: none; }
-.panel.active { display: block; }
-
-/* ── Section labels ── */
 .section-label {
   font-family: var(--mono);
   font-size: 10px;
@@ -139,14 +96,9 @@ h1 {
   margin-bottom: 12px;
 }
 
-/* ── Divider ── */
 hr { border: none; border-top: 1px solid var(--border); margin: 1.8rem 0; }
 
-/* ══════════════════════════════════════
-   8-PUZZLE PANEL
-══════════════════════════════════════ */
-
-/* depth controls */
+/* ── Depth + Randomize ── */
 .depth-control {
   display: flex;
   align-items: center;
@@ -177,8 +129,38 @@ input[type=range] {
   min-width: 32px;
   text-align: right;
 }
+.rand-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.rand-btn:hover { background: var(--bg4); color: var(--text); border-color: var(--cyan); }
 
-/* static puzzle display */
+.random-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--cyan);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.2);
+  padding: 2px 7px;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  flex-shrink: 0;
+}
+.random-badge.show { opacity: 1; }
+
+/* ── Static puzzle ── */
 .puzzle-section {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -186,12 +168,7 @@ input[type=range] {
   margin-bottom: 1.8rem;
   align-items: start;
 }
-.puzzle-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
+.puzzle-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .puzzle-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -210,38 +187,19 @@ input[type=range] {
   font-weight: 600;
   background: var(--bg2);
   color: var(--text);
-  transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 .cell.empty { background: transparent; border-style: dashed; opacity: 0.25; }
 .cell.correct { background: rgba(74,222,128,0.1); color: var(--green); border-color: rgba(74,222,128,0.35); }
 .cell.misplaced { background: rgba(245,158,11,0.1); color: var(--amber); border-color: rgba(245,158,11,0.35); }
 
-.puzzle-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 2px;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 11px;
-  color: var(--text2);
-}
-.legend-dot {
-  width: 10px; height: 10px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
+.puzzle-legend { display: flex; flex-direction: column; gap: 5px; margin-top: 2px; }
+.legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text2); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-/* algo bars */
+/* ── Algo bars ── */
 .algo-bars { display: flex; flex-direction: column; gap: 14px; }
-.algo-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.algo-row { display: flex; align-items: center; gap: 10px; }
 .algo-name {
   font-family: var(--mono);
   font-size: 11px;
@@ -268,13 +226,6 @@ input[type=range] {
   height: 100%;
   border-radius: 3px;
   transition: width 0.55s cubic-bezier(0.25, 1, 0.5, 1);
-  display: flex;
-  align-items: center;
-  padding-left: 8px;
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(0,0,0,0.6);
   min-width: 2%;
 }
 .algo-val {
@@ -285,13 +236,44 @@ input[type=range] {
   text-align: right;
 }
 
-/* ── RACE / ANIMATION SECTION ── */
+/* ── Race section ── */
 .race-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
+.race-header-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.race-header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* Mode toggle */
+.mode-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 3px;
+}
+.mode-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+.mode-btn.active { background: var(--bg4); color: var(--text); border: 1px solid var(--border2); }
+.mode-btn:hover:not(.active) { color: var(--text); }
+
+/* Auto controls */
+.auto-controls-wrap { display: flex; gap: 8px; align-items: center; }
 .run-btn {
   font-family: var(--mono);
   font-size: 11px;
@@ -307,21 +289,70 @@ input[type=range] {
 .run-btn:hover { background: rgba(34,197,94,0.2); }
 .run-btn:disabled { opacity: 0.4; cursor: default; }
 
+.race-controls { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text2); }
+.speed-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.speed-btn.active, .speed-btn:hover { background: var(--bg3); color: var(--text); }
+
+/* Step controls */
+.step-controls-wrap { display: none; align-items: center; gap: 8px; }
+.step-reset-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+}
+.step-reset-btn:hover { background: var(--bg4); color: var(--text); }
+.step-nav { display: flex; align-items: center; gap: 6px; }
+.step-btn {
+  font-family: var(--mono);
+  font-size: 14px;
+  width: 32px;
+  height: 30px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.step-btn:hover:not(:disabled) { background: var(--bg4); color: var(--text); border-color: var(--cyan); }
+.step-btn:disabled { opacity: 0.3; cursor: default; }
+.step-counter {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  min-width: 64px;
+  text-align: center;
+}
+
+/* Race layout */
 .race-layout {
   display: flex;
   gap: 20px;
   align-items: flex-start;
   margin-bottom: 1rem;
 }
-.race-board-wrap {
-  flex-shrink: 0;
-}
-.race-stats-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.race-board-wrap { flex-shrink: 0; }
+.race-stats-panel { flex: 1; display: flex; flex-direction: column; gap: 8px; }
 .race-stat-row {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -349,33 +380,16 @@ input[type=range] {
   padding: 2px 6px;
   border-radius: 3px;
 }
-.race-stat-row.winner .race-stat-cell:last-child {
-  margin-right: 52px;
-}
-.race-stat-algo {
-  min-width: 0;
-}
-.race-algo-name {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text);
-}
-.race-algo-sub {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text3);
-  margin-top: 1px;
-  letter-spacing: 0.04em;
-}
-.race-stat-cell {
-  text-align: right;
-  min-width: 72px;
-}
+.race-stat-row.winner .race-stat-cell:last-child { margin-right: 52px; }
+.race-stat-algo { min-width: 0; }
+.race-algo-name { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--text); }
+.race-algo-sub { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 1px; letter-spacing: 0.04em; }
+.race-stat-cell { text-align: right; min-width: 72px; }
+
 .race-puzzle {
   position: relative;
   width: 138px;
-  height: 138px; /* 3 * (42px cell + 4px gap) - 4px = 138px */
+  height: 138px;
   flex-shrink: 0;
 }
 .race-cell {
@@ -392,11 +406,8 @@ input[type=range] {
   font-weight: 600;
   background: var(--bg3);
   color: var(--text);
-  /* transform handles tile sliding; background/color fade separately */
   transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              background 0.4s ease,
-              color 0.4s ease,
-              border-color 0.4s ease;
+              background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
   will-change: transform;
 }
 .race-cell.empty { background: transparent; border-style: dashed; opacity: 0.2; }
@@ -411,36 +422,9 @@ input[type=range] {
   margin-bottom: 3px;
   text-transform: uppercase;
 }
-.race-stat-val {
-  font-family: var(--mono);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-}
+.race-stat-val { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--text); }
+.race-stat-val.ticking { color: var(--amber); }
 
-/* speed control */
-.race-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-}
-.speed-btn {
-  font-family: var(--mono);
-  font-size: 10px;
-  padding: 4px 10px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.12s;
-}
-.speed-btn.active, .speed-btn:hover { background: var(--bg3); color: var(--text); }
-
-/* note */
 .note {
   font-size: 11px;
   color: var(--text3);
@@ -448,110 +432,13 @@ input[type=range] {
   padding-top: 0.8rem;
   font-family: var(--mono);
 }
-
-/* ══════════════════════════════════════
-   FEATURE SELECTION PANEL
-══════════════════════════════════════ */
-.stat-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 1.5rem;
-}
-.stat {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 14px;
-}
-.stat-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 6px;
-}
-.stat-val {
-  font-family: var(--mono);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 1.4rem;
-}
-.controls label {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-}
-select {
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 6px 12px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border2);
-  background: var(--bg2);
-  color: var(--text);
-  cursor: pointer;
-}
-
-.chart-wrap {
-  position: relative;
-  width: 100%;
-  height: 240px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 14px;
-  margin-bottom: 1.4rem;
-}
-
-.feat-bars { display: flex; flex-direction: column; gap: 10px; }
-.feat-bar-row { display: flex; align-items: center; gap: 10px; }
-.feat-bar-name {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-  width: 150px;
-  flex-shrink: 0;
-}
-.feat-bar-bg {
-  flex: 1;
-  height: 18px;
-  background: var(--bg3);
-  border-radius: 3px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-.feat-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--cyan);
-  transition: width 0.55s cubic-bezier(0.25,1,0.5,1);
-  opacity: 0.7;
-}
-.feat-bar-val {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--cyan);
-  width: 42px;
-  text-align: right;
-}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-left">
-    <div class="header-tag">// intro to ai</div>
-    <h1>Luke Matsunaga</h1>
+    <h1>8-Puzzle Solver</h1>
     <div class="header-sub">
       <a href="https://github.com/ActualCookie88/IntroToAIProjects" target="_blank">github.com/ActualCookie88/IntroToAIProjects</a>
     </div>
@@ -563,68 +450,72 @@ select {
   </div>
 </div>
 
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('puzzle')">8-Puzzle Solver</button>
-  <button class="tab" onclick="switchTab('feature')">Feature Selection</button>
+<!-- Depth + Randomize -->
+<div class="depth-control">
+  <span class="depth-label">Solution depth</span>
+  <input type="range" min="0" max="24" value="8" step="2" id="depth-slider" oninput="updateDepth(this.value)">
+  <span class="depth-val" id="depth-out">8</span>
+  <button class="rand-btn" onclick="randomizePuzzle()">⊞ Randomize</button>
+  <span class="random-badge" id="rand-badge">RANDOM</span>
 </div>
 
-<!-- ════════════════════ 8-PUZZLE PANEL ════════════════════ -->
-<div id="puzzle" class="panel active">
-
-  <div class="depth-control">
-    <span class="depth-label">Solution depth</span>
-    <input type="range" min="0" max="24" value="8" step="2" id="depth-slider" oninput="updateDepth(this.value)">
-    <span class="depth-val" id="depth-out">8</span>
-  </div>
-
-  <div class="puzzle-section">
-    <div class="puzzle-wrap">
-      <div class="section-label">Initial state</div>
-      <div class="puzzle-grid" id="puzzle-grid"></div>
-      <div class="puzzle-legend">
-        <div class="legend-item">
-          <div class="legend-dot" style="background:rgba(74,222,128,0.35);border:1px solid var(--green)"></div>
-          <span>in goal position</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:rgba(245,158,11,0.35);border:1px solid var(--amber)"></div>
-          <span>misplaced</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:transparent;border:1px dashed var(--text3)"></div>
-          <span>blank tile</span>
-        </div>
+<!-- Static puzzle + bars -->
+<div class="puzzle-section">
+  <div class="puzzle-wrap">
+    <div class="section-label">Initial state</div>
+    <div class="puzzle-grid" id="puzzle-grid"></div>
+    <div class="puzzle-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:rgba(74,222,128,0.35);border:1px solid var(--green)"></div>
+        <span>in goal position</span>
       </div>
-    </div>
-
-    <div>
-      <div class="section-label">Nodes expanded — all algorithms at depth <span id="depth-label-inline">8</span></div>
-      <div class="algo-bars">
-        <div class="algo-row">
-          <div class="algo-name">UCS <span>Uniform Cost Search</span></div>
-          <div class="algo-bar-bg"><div class="algo-bar" id="bar-ucs" style="background:var(--red);"></div></div>
-          <div class="algo-val" id="val-ucs" style="color:var(--red)"></div>
-        </div>
-        <div class="algo-row">
-          <div class="algo-name">A* Misplaced <span>A* + Misplaced Tile heuristic</span></div>
-          <div class="algo-bar-bg"><div class="algo-bar" id="bar-mis" style="background:var(--blue);"></div></div>
-          <div class="algo-val" id="val-mis" style="color:var(--blue)"></div>
-        </div>
-        <div class="algo-row">
-          <div class="algo-name">A* Manhattan <span>A* + Manhattan Distance heuristic</span></div>
-          <div class="algo-bar-bg"><div class="algo-bar" id="bar-man" style="background:var(--green);"></div></div>
-          <div class="algo-val" id="val-man" style="color:var(--green)"></div>
-        </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:rgba(245,158,11,0.35);border:1px solid var(--amber)"></div>
+        <span>misplaced</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:transparent;border:1px dashed var(--text3)"></div>
+        <span>blank tile</span>
       </div>
     </div>
   </div>
 
-  <hr>
+  <div>
+    <div class="section-label">Nodes expanded — all algorithms at depth <span id="depth-label-inline">8</span></div>
+    <div class="algo-bars">
+      <div class="algo-row">
+        <div class="algo-name">UCS <span>Uniform Cost Search</span></div>
+        <div class="algo-bar-bg"><div class="algo-bar" id="bar-ucs" style="background:var(--red);"></div></div>
+        <div class="algo-val" id="val-ucs" style="color:var(--red)"></div>
+      </div>
+      <div class="algo-row">
+        <div class="algo-name">A* Misplaced <span>A* + Misplaced Tile heuristic</span></div>
+        <div class="algo-bar-bg"><div class="algo-bar" id="bar-mis" style="background:var(--blue);"></div></div>
+        <div class="algo-val" id="val-mis" style="color:var(--blue)"></div>
+      </div>
+      <div class="algo-row">
+        <div class="algo-name">A* Manhattan <span>A* + Manhattan Distance heuristic</span></div>
+        <div class="algo-bar-bg"><div class="algo-bar" id="bar-man" style="background:var(--green);"></div></div>
+        <div class="algo-val" id="val-man" style="color:var(--green)"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <!-- RACE SECTION -->
-  <div class="race-header">
+<hr>
+
+<!-- Race / Step section -->
+<div class="race-header">
+  <div class="race-header-left">
     <div class="section-label" style="margin:0">Algorithm race — watch them solve</div>
-    <div style="display:flex;gap:8px;align-items:center;">
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-auto" onclick="setMode('auto')">▶ Auto</button>
+      <button class="mode-btn" id="mode-step" onclick="setMode('step')">⇥ Step</button>
+    </div>
+  </div>
+  <div class="race-header-right">
+    <!-- Auto controls -->
+    <div class="auto-controls-wrap" id="auto-controls">
       <div class="race-controls">
         <span>Speed:</span>
         <button class="speed-btn" onclick="setSpeed(2000,this)">0.5×</button>
@@ -634,109 +525,75 @@ select {
       </div>
       <button class="run-btn" id="run-btn" onclick="startRace()">▶ Run Race</button>
     </div>
-  </div>
-
-  <div class="race-layout">
-    <!-- Single shared puzzle board -->
-    <div class="race-board-wrap">
-      <div class="race-puzzle" id="rpuzzle-ucs"></div>
-    </div>
-    <!-- Stats for all three algorithms -->
-    <div class="race-stats-panel">
-      <div class="race-stat-row" id="race-ucs">
-        <div class="race-stat-algo">
-          <div class="race-algo-name">UCS</div>
-          <div class="race-algo-sub">UNIFORM COST SEARCH</div>
-        </div>
-        <div class="race-stat-cell">
-          <div class="race-stat-label">Steps</div>
-          <div class="race-stat-val" id="rstep-ucs">—</div>
-        </div>
-        <div class="race-stat-cell">
-          <div class="race-stat-label">Nodes Expanded</div>
-          <div class="race-stat-val" id="rexp-ucs">—</div>
-        </div>
-      </div>
-      <div class="race-stat-row" id="race-mis">
-        <div class="race-stat-algo">
-          <div class="race-algo-name">A* Misplaced</div>
-          <div class="race-algo-sub">MISPLACED TILE HEURISTIC</div>
-        </div>
-        <div class="race-stat-cell">
-          <div class="race-stat-label">Steps</div>
-          <div class="race-stat-val" id="rstep-mis">—</div>
-        </div>
-        <div class="race-stat-cell">
-          <div class="race-stat-label">Nodes Expanded</div>
-          <div class="race-stat-val" id="rexp-mis">—</div>
-        </div>
-      </div>
-      <div class="race-stat-row" id="race-man">
-        <div class="race-stat-algo">
-          <div class="race-algo-name">A* Manhattan</div>
-          <div class="race-algo-sub">MANHATTAN DISTANCE</div>
-        </div>
-        <div class="race-stat-cell">
-          <div class="race-stat-label">Steps</div>
-          <div class="race-stat-val" id="rstep-man">—</div>
-        </div>
-        <div class="race-stat-cell">
-          <div class="race-stat-label">Nodes Expanded</div>
-          <div class="race-stat-val" id="rexp-man">—</div>
-        </div>
+    <!-- Step controls -->
+    <div class="step-controls-wrap" id="step-controls">
+      <button class="step-reset-btn" onclick="initStepMode()">↺ Reset</button>
+      <div class="step-nav">
+        <button class="step-btn" id="btn-prev" onclick="stepBy(-1)" disabled>←</button>
+        <span class="step-counter" id="step-counter">— / —</span>
+        <button class="step-btn" id="btn-next" onclick="stepBy(1)" disabled>→</button>
       </div>
     </div>
-  </div>
-
-  <div class="note">
-    Node counts are actual measured results from globals.cpp. Race animation shows
-    a representative solution path — step count reflects true optimal depth.
-    UCS explores ~160× more nodes than A* Manhattan at depth 24.
   </div>
 </div>
 
-<!-- ════════════════════ FEATURE SELECTION PANEL ════════════════════ -->
-<div id="feature" class="panel">
-
-  <div class="stat-row">
-    <div class="stat">
-      <div class="stat-label">Dataset</div>
-      <div class="stat-val" style="font-size:14px">UCI Wine</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Samples / Features</div>
-      <div class="stat-val" style="font-size:16px">178 / 13</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Classes</div>
-      <div class="stat-val">3</div>
-    </div>
+<div class="race-layout">
+  <div class="race-board-wrap">
+    <div class="race-puzzle" id="rpuzzle-ucs"></div>
   </div>
-
-  <div class="controls">
-    <label>Algorithm:</label>
-    <select id="fs-algo" onchange="renderFeature()">
-      <option>Forward selection</option>
-      <option>Backward elimination</option>
-    </select>
-  </div>
-
-  <div class="section-label">1-NN LOOCV accuracy by number of features used</div>
-  <div class="chart-wrap">
-    <canvas id="featureChart"></canvas>
-  </div>
-
-  <div class="section-label">Top contributing features (forward selection order)</div>
-  <div class="feat-bars" id="feature-bars"></div>
-
-  <div class="note" style="margin-top:1.4rem">
-    // Accuracy values are representative of typical 1-NN + LOOCV results on UCI Wine (ID 109).
-    // Replace with your actual program output. The jump from ~72% (all 13) to ~97% (best subset)
-    // demonstrates that irrelevant features degrade a simple nearest-neighbor classifier.
+  <div class="race-stats-panel">
+    <div class="race-stat-row" id="race-ucs">
+      <div class="race-stat-algo">
+        <div class="race-algo-name">UCS</div>
+        <div class="race-algo-sub">UNIFORM COST SEARCH</div>
+      </div>
+      <div class="race-stat-cell">
+        <div class="race-stat-label">Steps</div>
+        <div class="race-stat-val" id="rstep-ucs">—</div>
+      </div>
+      <div class="race-stat-cell">
+        <div class="race-stat-label">Nodes Expanded</div>
+        <div class="race-stat-val" id="rexp-ucs">—</div>
+      </div>
+    </div>
+    <div class="race-stat-row" id="race-mis">
+      <div class="race-stat-algo">
+        <div class="race-algo-name">A* Misplaced</div>
+        <div class="race-algo-sub">MISPLACED TILE HEURISTIC</div>
+      </div>
+      <div class="race-stat-cell">
+        <div class="race-stat-label">Steps</div>
+        <div class="race-stat-val" id="rstep-mis">—</div>
+      </div>
+      <div class="race-stat-cell">
+        <div class="race-stat-label">Nodes Expanded</div>
+        <div class="race-stat-val" id="rexp-mis">—</div>
+      </div>
+    </div>
+    <div class="race-stat-row" id="race-man">
+      <div class="race-stat-algo">
+        <div class="race-algo-name">A* Manhattan</div>
+        <div class="race-algo-sub">MANHATTAN DISTANCE</div>
+      </div>
+      <div class="race-stat-cell">
+        <div class="race-stat-label">Steps</div>
+        <div class="race-stat-val" id="rstep-man">—</div>
+      </div>
+      <div class="race-stat-cell">
+        <div class="race-stat-label">Nodes Expanded</div>
+        <div class="race-stat-val" id="rexp-man">—</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<div class="note">
+  Node counts are actual measured results from globals.cpp. Race animation shows
+  a representative solution path — step count reflects true optimal depth.
+  UCS explores ~160× more nodes than A* Manhattan at depth 24.
+  Use Step mode to manually advance one move at a time. Randomize generates a new solvable puzzle.
+</div>
+
 <script>
 // ════════════════════════════════════════
 // DATA
@@ -757,7 +614,7 @@ const realNodes = {
   24: [123032, 15890, 770]
 };
 
-const puzzleStates = {
+const presetStates = {
   0:  [1,2,3,4,5,6,7,8,0],
   2:  [1,2,3,4,5,6,0,7,8],
   4:  [1,2,3,5,0,6,4,7,8],
@@ -773,75 +630,127 @@ const puzzleStates = {
   24: [0,7,2,4,6,1,3,5,8],
 };
 
-const goal = [1,2,3,4,5,6,7,8,0];
+const GOAL = [1,2,3,4,5,6,7,8,0];
 
-// Pre-built solution paths (representative optimal paths for each depth)
-// ── BFS solver: finds the exact optimal path from any start state to goal ──
-// Uses the same move rules as your C++ expand() function.
-// Returns an array of flat 9-element states from start → goal.
+let currentState = presetStates[8].slice();
+let isRandom = false;
+
+// ════════════════════════════════════════
+// BFS SOLVER
+// ════════════════════════════════════════
 function bfsSolve(startFlat) {
-  const goalKey = '1,2,3,4,5,6,7,8,0';
+  const goalKey = GOAL.join(',');
   const startKey = startFlat.join(',');
   if (startKey === goalKey) return [startFlat.slice()];
 
-  // Each entry: [stateKey, parentKey]
-  const parent = new Map();
-  parent.set(startKey, null);
+  const parent = new Map([[startKey, null]]);
   const queue = [startFlat.slice()];
+  const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
 
-  // All 4 possible moves: [rowDelta, colDelta]
-  const moves = [[-1,0],[0,-1],[1,0],[0,1]]; // up, left, down, right — matches expand() in Puzzle.cpp
-
-  while (queue.length > 0) {
+  while (queue.length) {
     const curr = queue.shift();
     const key = curr.join(',');
-
-    // Find blank (0)
     const bi = curr.indexOf(0);
-    const br = Math.floor(bi / 3);
-    const bc = bi % 3;
+    const br = Math.floor(bi/3), bc = bi%3;
 
-    for (const [dr, dc] of moves) {
-      const nr = br + dr;
-      const nc = bc + dc;
-      if (nr < 0 || nr > 2 || nc < 0 || nc > 2) continue;
-
-      // Swap blank with neighbor
+    for (const [dr,dc] of dirs) {
+      const nr=br+dr, nc=bc+dc;
+      if (nr<0||nr>2||nc<0||nc>2) continue;
       const next = curr.slice();
-      const ni = nr * 3 + nc;
-      next[bi] = next[ni];
-      next[ni] = 0;
-
-      const nextKey = next.join(',');
-      if (parent.has(nextKey)) continue;
-      parent.set(nextKey, key);
-
-      if (nextKey === goalKey) {
-        // Reconstruct path
+      const ni = nr*3+nc;
+      [next[bi], next[ni]] = [next[ni], next[bi]];
+      const nk = next.join(',');
+      if (parent.has(nk)) continue;
+      parent.set(nk, key);
+      if (nk === goalKey) {
         const path = [];
         let k = goalKey;
-        while (k !== null) {
-          // Rebuild state array from key
-          path.push(k.split(',').map(Number));
-          k = parent.get(k);
-        }
-        path.reverse();
-        return path;
+        while (k !== null) { path.push(k.split(',').map(Number)); k = parent.get(k); }
+        return path.reverse();
       }
       queue.push(next);
     }
   }
-  return [startFlat, [1,2,3,4,5,6,7,8,0]]; // fallback (should never hit)
+  return [startFlat.slice(), GOAL.slice()];
 }
 
-// Cache so we only solve each depth once
+function isSolvable(tiles) {
+  const flat = tiles.filter(v=>v!==0);
+  let inv = 0;
+  for (let i=0;i<flat.length;i++) for (let j=i+1;j<flat.length;j++) if (flat[i]>flat[j]) inv++;
+  return inv%2===0;
+}
+
+function manhattanDist(tiles) {
+  let d = 0;
+  for (let i=0;i<9;i++) {
+    if (!tiles[i]) continue;
+    const g = tiles[i]-1;
+    d += Math.abs(Math.floor(i/3)-Math.floor(g/3)) + Math.abs(i%3-g%3);
+  }
+  return d;
+}
+
+// ════════════════════════════════════════
+// PATH CACHE
+// ════════════════════════════════════════
 const pathCache = new Map();
 
-function buildSolutionPath(startFlat, depth) {
-  if (pathCache.has(depth)) return pathCache.get(depth);
-  const path = bfsSolve(startFlat);
-  pathCache.set(depth, path);
-  return path;
+function getSolutionPath(state, cacheKey) {
+  const k = cacheKey != null ? String(cacheKey) : state.join(',');
+  if (!pathCache.has(k)) pathCache.set(k, bfsSolve(state));
+  return pathCache.get(k);
+}
+
+// ════════════════════════════════════════
+// RANDOMIZE
+// ════════════════════════════════════════
+function randomizePuzzle() {
+  const depth = parseInt(document.getElementById('depth-slider').value) || 8;
+  // Generate via random walk from goal
+  let state = GOAL.slice();
+  const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+  let prev = -1;
+  const steps = depth + Math.floor(Math.random()*6);
+  for (let m=0; m<steps; m++) {
+    const bi = state.indexOf(0);
+    const br=Math.floor(bi/3), bc=bi%3;
+    const valid = [];
+    dirs.forEach(([dr,dc],i)=>{
+      const nr=br+dr,nc=bc+dc;
+      if (nr>=0&&nr<=2&&nc>=0&&nc<=2&&i!==prev) valid.push({nr,nc,opp:[1,0,3,2][i]});
+    });
+    const pick = valid[Math.floor(Math.random()*valid.length)];
+    const ni = pick.nr*3+pick.nc;
+    [state[bi],state[ni]]=[state[ni],state[bi]];
+    prev = pick.opp;
+  }
+  currentState = state;
+  isRandom = true;
+  pathCache.delete('random');
+
+  document.getElementById('rand-badge').classList.add('show');
+  stopRace();
+  drawPuzzleFromState(currentState);
+  updateNodesEstimate();
+  initRacePuzzles();
+  if (currentMode==='step') initStepMode();
+}
+
+function updateNodesEstimate() {
+  const md = manhattanDist(currentState);
+  const keys = Object.keys(realNodes).map(Number).sort((a,b)=>a-b);
+  let best = keys[0];
+  for (const k of keys) { if (k<=md) best=k; }
+  document.getElementById('depth-label-inline').textContent = '~'+md;
+  const [u,m,ma] = realNodes[best];
+  const maxV = u||1;
+  document.getElementById('bar-ucs').style.width = u===0?'2%':'100%';
+  document.getElementById('bar-mis').style.width = Math.max(2,Math.round(m/maxV*100))+'%';
+  document.getElementById('bar-man').style.width = Math.max(2,Math.round(ma/maxV*100))+'%';
+  document.getElementById('val-ucs').textContent = fmtNum(u);
+  document.getElementById('val-mis').textContent = fmtNum(m);
+  document.getElementById('val-man').textContent = fmtNum(ma);
 }
 
 // ════════════════════════════════════════
@@ -850,51 +759,75 @@ function buildSolutionPath(startFlat, depth) {
 let raceSpeed = 1000;
 let raceTimers = [];
 let raceRunning = false;
+let nodeTickerRAFs = {};
 
 function setSpeed(ms, btn) {
   raceSpeed = ms;
-  document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
 
 function fmtNum(n) {
-  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
-  if (n >= 1000) return (n/1000).toFixed(1)+'K';
-  return n.toString();
+  if (n>=1e6) return (n/1e6).toFixed(1)+'M';
+  if (n>=1000) return (n/1000).toFixed(1)+'K';
+  return String(n);
+}
+
+// Live animated node counter
+function animateTicker(elId, from, to, duration) {
+  if (nodeTickerRAFs[elId]) cancelAnimationFrame(nodeTickerRAFs[elId]);
+  const el = document.getElementById(elId);
+  el.classList.add('ticking');
+  const t0 = performance.now();
+  function tick(now) {
+    const p = Math.min(1, (now-t0)/duration);
+    const ease = p<0.5 ? 2*p*p : -1+(4-2*p)*p;
+    el.textContent = fmtNum(Math.round(from + (to-from)*ease));
+    if (p<1) { nodeTickerRAFs[elId] = requestAnimationFrame(tick); }
+    else { el.textContent = fmtNum(to); el.classList.remove('ticking'); }
+  }
+  nodeTickerRAFs[elId] = requestAnimationFrame(tick);
 }
 
 function getNodes(depth) {
-  if (realNodes[depth] !== undefined) return realNodes[depth];
+  if (realNodes[depth]!==undefined) return realNodes[depth];
   const keys = Object.keys(realNodes).map(Number).sort((a,b)=>a-b);
-  let lo = keys[0], hi = keys[keys.length-1];
-  for (let i = 0; i < keys.length-1; i++) {
-    if (keys[i] <= depth && keys[i+1] >= depth) { lo=keys[i]; hi=keys[i+1]; break; }
+  let lo=keys[0], hi=keys[keys.length-1];
+  for (let i=0;i<keys.length-1;i++) {
+    if (keys[i]<=depth&&keys[i+1]>=depth){lo=keys[i];hi=keys[i+1];break;}
   }
-  const t = (depth - lo) / (hi - lo);
-  return realNodes[lo].map((v,i) => Math.round(v + t*(realNodes[hi][i]-v)));
+  const t=(depth-lo)/(hi-lo);
+  return realNodes[lo].map((v,i)=>Math.round(v+t*(realNodes[hi][i]-v)));
 }
 
 // ════════════════════════════════════════
 // STATIC PUZZLE
 // ════════════════════════════════════════
-function drawPuzzle(depth) {
-  const tiles = puzzleStates[depth] || puzzleStates[8];
+function drawPuzzleFromState(tiles) {
   const grid = document.getElementById('puzzle-grid');
   grid.innerHTML = '';
-  tiles.forEach((v,i) => {
+  tiles.forEach((v,i)=>{
     const d = document.createElement('div');
-    d.className = 'cell' + (v===0 ? ' empty' : v===goal[i] ? ' correct' : ' misplaced');
-    d.textContent = v===0 ? '' : v;
+    d.className = 'cell'+(v===0?' empty':v===GOAL[i]?' correct':' misplaced');
+    d.textContent = v===0?'':v;
     grid.appendChild(d);
   });
 }
 
+function drawPuzzle(depth) {
+  currentState = (presetStates[depth]||presetStates[8]).slice();
+  isRandom = false;
+  document.getElementById('rand-badge').classList.remove('show');
+  drawPuzzleFromState(currentState);
+}
+
 function updateNodes(depth) {
-  const [u, m, ma] = getNodes(depth);
-  const maxV = u || 1;
-  document.getElementById('bar-ucs').style.width = u===0 ? '2%' : '100%';
-  document.getElementById('bar-mis').style.width = Math.max(2, Math.round((m/maxV)*100))+'%';
-  document.getElementById('bar-man').style.width = Math.max(2, Math.round((ma/maxV)*100))+'%';
+  const [u,m,ma] = getNodes(depth);
+  const maxV = u||1;
+  document.getElementById('depth-label-inline').textContent = depth;
+  document.getElementById('bar-ucs').style.width = u===0?'2%':'100%';
+  document.getElementById('bar-mis').style.width = Math.max(2,Math.round(m/maxV*100))+'%';
+  document.getElementById('bar-man').style.width = Math.max(2,Math.round(ma/maxV*100))+'%';
   document.getElementById('val-ucs').textContent = fmtNum(u);
   document.getElementById('val-mis').textContent = fmtNum(m);
   document.getElementById('val-man').textContent = fmtNum(ma);
@@ -903,88 +836,71 @@ function updateNodes(depth) {
 function updateDepth(v) {
   const d = parseInt(v);
   document.getElementById('depth-out').textContent = d;
-  document.getElementById('depth-label-inline').textContent = d;
   updateNodes(d);
   drawPuzzle(d);
   stopRace();
-  initRacePuzzles(d);
+  initRacePuzzles();
+  if (currentMode==='step') initStepMode();
 }
 
 // ════════════════════════════════════════
-// RACE
+// RACE BOARD
 // ════════════════════════════════════════
-// Cell size + gap must match CSS: 42px cell, 4px gap
-const CELL = 42;
-const GAP  = 4;
+const CELL=42, GAP=4;
+const tileEls = {};
 
-// Returns the top-left pixel position for grid index i
-function cellPos(i) {
-  const row = Math.floor(i / 3);
-  const col = i % 3;
-  return { x: col * (CELL + GAP), y: row * (CELL + GAP) };
-}
+function cellPos(i) { return {x:(i%3)*(CELL+GAP), y:Math.floor(i/3)*(CELL+GAP)}; }
 
-// tileElements[containerId][tileValue] = DOM element
-// We track persistent elements keyed by tile VALUE (1-8), blank = 0
-const tileElements = {};
-
-function initRacePuzzles(depth) {
-  const start = puzzleStates[depth] || puzzleStates[8];
-
-  // Only one shared board now — keyed to 'rpuzzle-ucs'
-  const containerId = 'rpuzzle-ucs';
-  const container = document.getElementById(containerId);
+function initRacePuzzles() {
+  const cid = 'rpuzzle-ucs';
+  const container = document.getElementById(cid);
   container.innerHTML = '';
-  tileElements[containerId] = {};
+  tileEls[cid] = {};
 
-  start.forEach((v, i) => {
+  currentState.forEach((v,i)=>{
     const el = document.createElement('div');
     const pos = cellPos(i);
-    el.className = 'race-cell' + (v === 0 ? ' empty' : v === goal[i] ? ' correct' : '');
-    el.textContent = v === 0 ? '' : v;
-    el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+    el.className = 'race-cell'+(v===0?' empty':v===GOAL[i]?' correct':'');
+    el.textContent = v===0?'':v;
+    el.style.transform = `translate(${pos.x}px,${pos.y}px)`;
     el.style.transition = 'none';
     container.appendChild(el);
-    tileElements[containerId][v] = el;
+    tileEls[cid][v] = el;
   });
 
-  ['ucs','mis','man'].forEach(id => {
+  ['ucs','mis','man'].forEach(id=>{
     document.getElementById('rstep-'+id).textContent = '—';
     document.getElementById('rexp-'+id).textContent = '—';
     document.getElementById('race-'+id).classList.remove('winner');
   });
 }
 
-function renderRacePuzzle(containerId, tiles, prevTiles) {
-  const elMap = tileElements[containerId];
+function renderRacePuzzle(tiles, prevTiles) {
+  const cid = 'rpuzzle-ucs';
+  const elMap = tileEls[cid];
   if (!elMap) return;
-
-  tiles.forEach((v, i) => {
+  tiles.forEach((v,i)=>{
     const el = elMap[v];
     if (!el) return;
     const pos = cellPos(i);
-
-    // Re-enable transition (was disabled during init)
     el.style.transition = '';
-
-    // Slide to new position
-    el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-
-    // A tile moved if it was at a different index in the previous state
+    el.style.transform = `translate(${pos.x}px,${pos.y}px)`;
     const prevIdx = prevTiles ? prevTiles.indexOf(v) : i;
-    const moved = prevTiles && prevIdx !== i;
-    const isGoal = v !== 0 && v === goal[i];
-    el.className = 'race-cell'
-      + (v === 0 ? ' empty' : moved ? ' just-moved' : isGoal ? ' correct' : '');
+    const moved = prevTiles && prevIdx!==i;
+    const isGoal = v!==0 && v===GOAL[i];
+    el.className = 'race-cell'+(v===0?' empty':moved?' just-moved':isGoal?' correct':'');
   });
 }
 
+// ════════════════════════════════════════
+// AUTO RACE
+// ════════════════════════════════════════
 function stopRace() {
-  raceTimers.forEach(t => clearTimeout(t));
+  raceTimers.forEach(t=>clearTimeout(t));
   raceTimers = [];
   raceRunning = false;
-  document.getElementById('run-btn').disabled = false;
-  document.getElementById('run-btn').textContent = '▶ Run Race';
+  const btn = document.getElementById('run-btn');
+  if (btn) { btn.disabled=false; btn.textContent='▶ Run Race'; }
 }
 
 function startRace() {
@@ -994,119 +910,112 @@ function startRace() {
   document.getElementById('run-btn').textContent = '● Running...';
 
   const depth = parseInt(document.getElementById('depth-slider').value);
-  const [nodesUCS, nodesMis, nodesMan] = getNodes(depth);
+  const nodeArr = isRandom
+    ? [getNodes(Math.min(depth+4,24))[0], getNodes(depth)[1], getNodes(depth)[2]]
+    : getNodes(depth);
+  const [nodesUCS, nodesMis, nodesMan] = nodeArr;
 
-  // BFS finds the true optimal path; deep-copy so each config closure is independent
-  const sharedPath = buildSolutionPath((puzzleStates[depth] || puzzleStates[8]).slice(), depth);
-
+  const path = getSolutionPath(currentState.slice(), isRandom?'random':depth);
+  const steps = path.length-1;
   const configs = [
-    { id: 'ucs', totalNodes: nodesUCS },
-    { id: 'mis', totalNodes: nodesMis },
-    { id: 'man', totalNodes: nodesMan },
+    {id:'ucs', total:nodesUCS},
+    {id:'mis', total:nodesMis},
+    {id:'man', total:nodesMan},
   ];
+  const prevCounts = {ucs:0, mis:0, man:0};
 
-  const steps = sharedPath.length - 1;
+  path.forEach((state, si)=>{
+    raceTimers.push(setTimeout(()=>{
+      renderRacePuzzle(state, si>0?path[si-1]:null);
+      const progress = steps>0 ? si/steps : 1;
 
-  // Animate the single shared board
-  sharedPath.forEach((state, stepIdx) => {
-    raceTimers.push(setTimeout(() => {
-      const prev = stepIdx > 0 ? sharedPath[stepIdx - 1] : null;
-      renderRacePuzzle('rpuzzle-ucs', state, prev);
-
-      // Update all three stat rows in sync — they all follow the same path
-      const progress = steps > 0 ? stepIdx / steps : 1;
-      configs.forEach(cfg => {
-        document.getElementById('rstep-' + cfg.id).textContent = stepIdx;
-        document.getElementById('rexp-' + cfg.id).textContent = fmtNum(Math.round(cfg.totalNodes * progress));
+      configs.forEach(cfg=>{
+        document.getElementById('rstep-'+cfg.id).textContent = si;
+        const newCount = Math.round(cfg.total*progress);
+        if (newCount !== prevCounts[cfg.id]) {
+          animateTicker('rexp-'+cfg.id, prevCounts[cfg.id], newCount, Math.min(raceSpeed*0.75, 500));
+          prevCounts[cfg.id] = newCount;
+        }
       });
 
-      if (stepIdx === steps) {
-        configs.forEach(cfg => {
-          document.getElementById('rexp-' + cfg.id).textContent = fmtNum(cfg.totalNodes);
-          document.getElementById('race-' + cfg.id).classList.add('winner');
+      if (si===steps) {
+        configs.forEach(cfg=>{
+          animateTicker('rexp-'+cfg.id, prevCounts[cfg.id], cfg.total, 350);
+          document.getElementById('race-'+cfg.id).classList.add('winner');
         });
         raceRunning = false;
         document.getElementById('run-btn').disabled = false;
         document.getElementById('run-btn').textContent = '↺ Run Again';
       }
-    }, stepIdx * raceSpeed));
+    }, si*raceSpeed));
   });
 }
 
 // ════════════════════════════════════════
-// TABS
+// STEP-THROUGH MODE
 // ════════════════════════════════════════
-let featureChartInstance = null;
+let stepPath = [];
+let stepIndex = 0;
+let stepNodeTotals = [0,0,0];
 
-function switchTab(id) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['puzzle','feature'][i]===id));
-  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id===id));
-  if (id==='feature') renderFeature();
+function initStepMode() {
+  stopRace();
+  const depth = parseInt(document.getElementById('depth-slider').value);
+  const nodeArr = isRandom
+    ? [getNodes(Math.min(depth+4,24))[0], getNodes(depth)[1], getNodes(depth)[2]]
+    : getNodes(depth);
+  stepNodeTotals = nodeArr;
+  stepPath = getSolutionPath(currentState.slice(), isRandom?'random':depth);
+  stepIndex = 0;
+  initRacePuzzles();
+  updateStepUI();
 }
 
-// ════════════════════════════════════════
-// FEATURE SELECTION
-// ════════════════════════════════════════
-const fwdAcc = [null,72,84,91,95,96.5,97,97.1,96.8,96.5,95.9,95.2,94.8,92];
-const bwdAcc = [null,72,82,89,93,95,96.3,96.8,96.9,96.7,96.1,95.0,94.1,72];
-const featureNames = ['Flavanoids','Proline','Color intensity','Alcohol','OD280/OD315'];
-const featureScores = [97,94,90,86,81];
+function updateStepUI() {
+  const steps = stepPath.length-1;
+  const progress = steps>0 ? stepIndex/steps : 1;
 
-function renderFeature() {
-  const isFwd = document.getElementById('fs-algo').value === 'Forward selection';
-  const data = (isFwd ? fwdAcc : bwdAcc).slice(1);
-  const labels = Array.from({length:13},(_,i)=>i+1);
-  const peakVal = Math.max(...data);
-  const lineColor = '#22d3ee';
+  document.getElementById('step-counter').textContent = `${stepIndex} / ${steps}`;
+  document.getElementById('btn-prev').disabled = stepIndex===0;
+  document.getElementById('btn-next').disabled = stepIndex>=steps;
 
-  if (featureChartInstance) featureChartInstance.destroy();
-  featureChartInstance = new Chart(document.getElementById('featureChart'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: '1-NN LOOCV accuracy (%)',
-        data,
-        borderColor: lineColor,
-        backgroundColor: 'rgba(34,211,238,0.06)',
-        pointBackgroundColor: data.map(v => v===peakVal ? '#4ade80' : lineColor),
-        pointBorderColor: data.map(v => v===peakVal ? '#22c55e' : lineColor),
-        pointRadius: data.map(v => v===peakVal ? 7 : 3),
-        tension: 0.3, fill: true, borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1)+'%' },
-          backgroundColor: '#1c201e', borderColor: 'rgba(255,255,255,0.13)', borderWidth: 1,
-          titleColor: '#8a9690', bodyColor: '#e8ece9', titleFont: { family: 'IBM Plex Mono', size: 10 },
-          bodyFont: { family: 'IBM Plex Mono', size: 12 }
-        }
-      },
-      scales: {
-        x: { title: { display: true, text: 'Number of features', color: '#4f5c58', font: { family: 'IBM Plex Mono', size: 10 } },
-             ticks: { color: '#4f5c58', font: { family: 'IBM Plex Mono', size: 10 } },
-             grid: { color: 'rgba(255,255,255,0.04)' }, border: { color: 'rgba(255,255,255,0.07)' } },
-        y: { min: 60, max: 100,
-             title: { display: true, text: 'Accuracy (%)', color: '#4f5c58', font: { family: 'IBM Plex Mono', size: 10 } },
-             ticks: { callback: v => v+'%', color: '#4f5c58', font: { family: 'IBM Plex Mono', size: 10 } },
-             grid: { color: 'rgba(255,255,255,0.04)' }, border: { color: 'rgba(255,255,255,0.07)' } }
-      }
+  renderRacePuzzle(stepPath[stepIndex], stepIndex>0?stepPath[stepIndex-1]:null);
+
+  const ids = ['ucs','mis','man'];
+  ids.forEach((id,i)=>{
+    const total = stepNodeTotals[i];
+    document.getElementById('rstep-'+id).textContent = stepIndex;
+    document.getElementById('rexp-'+id).textContent = fmtNum(Math.round(total*progress));
+    if (stepIndex>=steps) {
+      document.getElementById('rexp-'+id).textContent = fmtNum(total);
+      document.getElementById('race-'+id).classList.add('winner');
+    } else {
+      document.getElementById('race-'+id).classList.remove('winner');
     }
   });
+}
 
-  const barsDiv = document.getElementById('feature-bars');
-  barsDiv.innerHTML = '';
-  featureNames.forEach((name, i) => {
-    barsDiv.innerHTML += `
-      <div class="feat-bar-row">
-        <div class="feat-bar-name">${name}</div>
-        <div class="feat-bar-bg"><div class="feat-bar-fill" style="width:${featureScores[i]}%"></div></div>
-        <div class="feat-bar-val">${featureScores[i]}%</div>
-      </div>`;
-  });
+function stepBy(delta) {
+  const next = stepIndex+delta;
+  if (next<0||next>=stepPath.length) return;
+  stepIndex = next;
+  updateStepUI();
+}
+
+// ════════════════════════════════════════
+// MODE TOGGLE
+// ════════════════════════════════════════
+let currentMode = 'auto';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('mode-auto').classList.toggle('active', mode==='auto');
+  document.getElementById('mode-step').classList.toggle('active', mode==='step');
+  document.getElementById('auto-controls').style.display = mode==='auto'?'flex':'none';
+  document.getElementById('step-controls').style.display = mode==='step'?'flex':'none';
+
+  if (mode==='step') { stopRace(); initStepMode(); }
+  else { initRacePuzzles(); }
 }
 
 // ════════════════════════════════════════
@@ -1114,7 +1023,7 @@ function renderFeature() {
 // ════════════════════════════════════════
 drawPuzzle(8);
 updateNodes(8);
-initRacePuzzles(8);
+initRacePuzzles();
 </script>
 </body>
 </html>
